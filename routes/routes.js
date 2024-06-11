@@ -2,7 +2,6 @@ const app = require("express");
 const router = app.Router();
 const authenticateUser = require("../middleware/auth");
 const handleOrder = require("../middleware/orderHandler");
-const guestmw = require("../middleware/guestmiddleware");
 const controllers = require("../controllers/controllers");
 const blockGuest = require("../middleware/guestmiddleware");
 

@@ -1,12 +1,13 @@
-# _Airbean API - Grupp7 - FE23_
+# _Airbean API - Individual project by Troj - Group 7 - FE23_
 
+Group 7
 Rebecca Jansson, Johanna Tepsa, Simon Gustavsson, Troj Andersen, Tor Högberg.
 
 ## Auth operations
 
 ### Sign Up
 
-To create a new account send a POST to **/public/signup**
+To create a new account send a POST to **/signup**
 
 the format for the request should look like this
 
@@ -22,7 +23,7 @@ All fields are required
 
 ### Log In
 
-To log in send a POST to **/public/login**
+To log in send a POST to **/login**
 
 the format for the request should look like this
 
@@ -37,7 +38,7 @@ All fields are required
 
 ### Guest
 
-To use a guest account send a GET to **/public/guest**
+To use a guest account send a GET to **/guest**
 
 **_IMPORTANT_** Guests can not review order history
 
@@ -45,13 +46,13 @@ To use a guest account send a GET to **/public/guest**
 
 ### View Menu
 
-To view the menu send a GET to **/public/menu**
+To view the menu send a GET to **/menu**
 
 The user needs to be on a user or guest account
 
 ### Add to cart
 
-To add a new product to the cart send a POST to **/public/addtocart**
+To add a new product to the cart send a POST to **/addtocart**
 
 The user needs to be on a user or guest account
 
@@ -70,7 +71,7 @@ All fields are required
 
 ### Remove from cart
 
-To add a new product to the cart send a POST to **/public/addtocart**
+To add a new product to the cart send a POST to **/addtocart**
 
 The user needs to be on a user or guest account
 
@@ -88,7 +89,7 @@ All fields are required
 
 ### View cart
 
-To view the cart send a GET to **/public/viewcart**
+To view the cart send a GET to **/viewcart**
 
 The user needs to be on a user or guest account
 
@@ -96,7 +97,7 @@ The user needs to be on a user or guest account
 
 When the user is happy with the items in cart
 
-Send a GET request to **/public/create**
+Send a GET request to **/create**
 
 This will place an order with a searchable id into the database.
 
@@ -104,7 +105,7 @@ Delivery data is not yet available
 
 ### Show previous orders
 
-Send a GET request to **/public/orderhistory**
+Send a GET request to **/orderhistory**
 
 The user needs to be logged in for this feature
 
