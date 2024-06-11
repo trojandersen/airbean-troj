@@ -6,7 +6,7 @@ Rebecca Jansson, Johanna Tepsa, Simon Gustavsson, Troj Andersen, Tor Högberg.
 
 ### Sign Up
 
-To create a new account send a POST to **/signup**
+To create a new account send a POST to **/public/signup**
 
 the format for the request should look like this
 
@@ -22,7 +22,7 @@ All fields are required
 
 ### Log In
 
-To log in send a POST to **/login**
+To log in send a POST to **/public/login**
 
 the format for the request should look like this
 
@@ -37,7 +37,7 @@ All fields are required
 
 ### Guest
 
-To use a guest account send a GET to **/guest**
+To use a guest account send a GET to **/public/guest**
 
 **_IMPORTANT_** Guests can not review order history
 
@@ -45,13 +45,13 @@ To use a guest account send a GET to **/guest**
 
 ### View Menu
 
-To view the menu send a GET to **/menu**
+To view the menu send a GET to **/public/menu**
 
 The user needs to be on a user or guest account
 
 ### Add to cart
 
-To add a new product to the cart send a POST to **/addtocart**
+To add a new product to the cart send a POST to **/public/addtocart**
 
 The user needs to be on a user or guest account
 
@@ -70,7 +70,7 @@ All fields are required
 
 ### Remove from cart
 
-To add a new product to the cart send a POST to **/addtocart**
+To add a new product to the cart send a POST to **/public/addtocart**
 
 The user needs to be on a user or guest account
 
@@ -88,7 +88,7 @@ All fields are required
 
 ### View cart
 
-To view the cart send a GET to **/viewcart**
+To view the cart send a GET to **/public/viewcart**
 
 The user needs to be on a user or guest account
 
@@ -96,7 +96,7 @@ The user needs to be on a user or guest account
 
 When the user is happy with the items in cart
 
-Send a GET request to **/create**
+Send a GET request to **/public/create**
 
 This will place an order with a searchable id into the database.
 
@@ -104,7 +104,7 @@ Delivery data is not yet available
 
 ### Show previous orders
 
-Send a GET request to **/orderhistory**
+Send a GET request to **/public/orderhistory**
 
 The user needs to be logged in for this feature
 
