@@ -2,6 +2,8 @@ const { client } = require("../config/database");
 
 const crypto = require("node:crypto");
 
+// function to make your orderID, used in createOrder
+
 const generateRandomString = (length) => {
   const characters =
     "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
@@ -11,6 +13,8 @@ const generateRandomString = (length) => {
   }
   return result;
 };
+
+// functions to make a new order, add & remove items from cart and to view the menu & your previous orders
 
 exports.createOrder = async (req, res) => {
   if (!req.session.cart) {
@@ -145,16 +149,6 @@ exports.getPreviousOrders = async (req, res) => {
   }
 };
 
-exports.continueAsGuest = async (req, res) => {
-  req.session.userID = "guest";
-
-  res
-    .status(200)
-    .json(
-      "Please note that you will not be able to review order history or change orders whilst you are logged in as guest"
-    );
-};
-
 exports.getMenu = async (req, res) => {
   try {
     const database = client.db("Airbean");
@@ -167,6 +161,18 @@ exports.getMenu = async (req, res) => {
     console.log("Error fetching menu:", err);
     res.status(500).json({ message: "Error fetching menu: " + err });
   }
+};
+
+// controllers for user authentication, login and account creation
+
+exports.continueAsGuest = async (req, res) => {
+  req.session.userID = "guest";
+
+  res
+    .status(200)
+    .json(
+      "Please note that you will not be able to review order history or change orders whilst you are logged in as guest"
+    );
 };
 
 exports.logIn = async (req, res) => {
@@ -222,7 +228,7 @@ exports.signUp = async (req, res) => {
       .digest("hex");
 
     const email = details.email;
-
+    const isAdmin = details.isAdmin;
     const shiftedUser = user.slice(5) + user.slice(0, 5);
     const shiftedPass = pass.slice(5) + pass.slice(0, 5);
 
@@ -242,6 +248,7 @@ exports.signUp = async (req, res) => {
             username: shiftedUser,
             password: shiftedPass,
             email: email,
+            isAdmin: false,
           });
           req.session.userID = shiftedUser;
           res.status(200).json(`Welcome to Airbean ${details.username}!`);
@@ -254,6 +261,59 @@ exports.signUp = async (req, res) => {
     res.status(500).json({ error: error });
   }
 };
+
+// admin controllers
+
+exports.createMenuItem = async (req, res) => {
+  const item = req.body;
+  const database = client.db("Airbean");
+  const menu = database.collection("Menu");
+  const findItem = await menu.findOne({ id: item.id });
+
+  if (findItem) {
+    res
+      .status(400)
+      .json(
+        "This item already exists in the menu, either remove or update instead."
+      );
+  } else if (
+    !item.id ||
+    !item.title ||
+    !item.price ||
+    !item.desc ||
+    item.price < 1
+  ) {
+    res
+      .status(400)
+      .json("One or more fields are missing. Please remake your query");
+  } else {
+    const newMenuItem = {
+      id: item.id,
+      title: item.title,
+      desc: item.desc,
+      price: item.price,
+      created_at: new Date().toDateString(),
+    };
+    await menu.insertOne(newMenuItem);
+    res.status(200).json("New item successfully added to the menu!");
+  }
+};
+
+exports.updateMenuItem = async (req, res) => {
+  const item = req.body;
+  const database = client.db("Airbean");
+  const menu = database.collection("Menu");
+  const findItem = await menu.findOne({ id: item.id });
+};
+
+exports.removeMenuItem = async (req, res) => {
+  const item = req.body;
+  const database = client.db("Airbean");
+  const menu = database.collection("Menu");
+  const findItem = await menu.findOne({ id: item.id });
+};
+
+exports.createDiscount = async (req, res) => {};
 
 exports.about = async (req, res) => {
   res

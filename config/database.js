@@ -18,7 +18,7 @@ const connectToMongoDB = async () => {
     await client.connect();
     // Send a ping to confirm a successful connection
     await client.db("Airbean").command({ ping: 1 });
-    console.log("Connected successfully to MongoDB");
+    console.log("Successfully connected to MongoDB");
   } catch (error) {
     console.error("Error connecting to MongoDB", error);
     process.exit(1); // Exit process with failure
