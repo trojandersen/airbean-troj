@@ -304,6 +304,23 @@ exports.updateMenuItem = async (req, res) => {
   const database = client.db("Airbean");
   const menu = database.collection("Menu");
   const findItem = await menu.findOne({ id: item.id });
+
+  if (findItem) {
+    const updatedMenuItem = {
+      id: item.id,
+      title: item.title,
+      desc: item.desc,
+      price: item.price,
+      created_at: findItem.created_at,
+      modified_at: new Date().toDateString(),
+    };
+    await menu.updateOne({ id: item.id }, { $set: updatedMenuItem });
+    res.status(200).json(`id: ${findItem.id} has been updated!`);
+  } else {
+    res
+      .status(400)
+      .json("There was no item found including this id in the menu");
+  }
 };
 
 exports.removeMenuItem = async (req, res) => {
@@ -311,6 +328,15 @@ exports.removeMenuItem = async (req, res) => {
   const database = client.db("Airbean");
   const menu = database.collection("Menu");
   const findItem = await menu.findOne({ id: item.id });
+
+  if (findItem) {
+    await menu.deleteOne(findItem);
+    res.status(200).json("This item was successfully removed from the menu!");
+  } else {
+    res
+      .status(400)
+      .json("There was no item found including this id in the menu");
+  }
 };
 
 exports.createDiscount = async (req, res) => {};
