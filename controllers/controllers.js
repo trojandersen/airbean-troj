@@ -24,9 +24,14 @@ exports.createOrder = async (req, res) => {
     try {
       const database = client.db("Airbean");
       const orders = database.collection("Orders");
+      const discounts = database.collection("Discounts");
+
 
       const userId = req.session.userID;
       const itemsInCart = req.session.cart;
+      const itemIds = itemsInCart.map(item => item.id);
+      const discount = await discounts.findOne({ comboIds: { $all: itemIds } });
+
       let billed = 0;
 
       itemsInCart.forEach((item) => {
@@ -38,6 +43,11 @@ exports.createOrder = async (req, res) => {
 
         billed += cost;
       });
+
+      // Apply discount if available
+      if (discount) {
+        billed = billed - (billed * (discount.discountPercentage / 100));
+      }
 
       const randomString = generateRandomString(8);
       const orderID = `${userId}${randomString}`;
@@ -339,7 +349,31 @@ exports.removeMenuItem = async (req, res) => {
   }
 };
 
-exports.createDiscount = async (req, res) => {};
+exports.createDiscount = async (req, res) => {
+  try {
+    const discount = req.body;
+
+    if (!discount.comboIds || discount.comboIds.length < 2 || !discount.discountPercentage) {
+      return res.status(400).json("Invalid discount: At least two comboIds and a discount percentage are required.");
+    }
+    // TODO: fix undefined type in comboIds array
+    const database = client.db("Airbean");
+    const discounts = database.collection("Discounts");
+    const discountDocument = {
+      comboIds: discount.comboIds,
+      discountPercentage: discount.discountPercentage,
+      created_at: new Date().toDateString()
+    };
+
+    // Insert the discount into the Discounts collection
+    const result = await discounts.insertOne(discountDocument);
+
+    res.status(201).json(result.ops[0]);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json("An error occured whilst trying to create this discount");
+  }
+};
 
 exports.about = async (req, res) => {
   res
