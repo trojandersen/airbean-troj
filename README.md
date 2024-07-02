@@ -3,110 +3,64 @@
 Group 7
 Rebecca Jansson, Johanna Tepsa, Simon Gustavsson, Troj Andersen, Tor Högberg.
 
-## Auth operations
+## Previously used options are found in the group project. Here I will instead focus on using the admin functions
 
-### Sign Up
+Setup the project with node and be sure to use npm install to ensure you have all the dependencies. Run the code by using
+"nodemon server.js". Then preferably use Insomnia to interact with the REST API.
 
-To create a new account send a POST to **/signup**
-
-the format for the request should look like this
-
+### LOGIN
+POST request on http://localhost:8000/login
 ```
 {
-"username": "Simon",
-"password" : "kakor",
-"email" : "simon@gmail.com"
+	"username": "admin",
+	"password": "admin"
 }
 ```
 
-All fields are required
+This user has admin functionality needed to bypass admin authentication.
 
-### Log In
-
-To log in send a POST to **/login**
-
-the format for the request should look like this
+### CREATEMENUITEM
+POST request on http://localhost:8000/createmenuitem
 
 ```
 {
-"username": "Simon",
-"password" : "kakor"
+	"id": 15,
+	"title": "Coffee Carta",
+	"desc": "Cartae",
+	"price": 56
 }
 ```
+This is an example of making a new menu item. Aslong as youre using a new unique ID it will create a new item in the menu.
 
-All fields are required
-
-### Guest
-
-To use a guest account send a GET to **/guest**
-
-**_IMPORTANT_** Guests can not review order history
-
-## Order handling
-
-### View Menu
-
-To view the menu send a GET to **/menu**
-
-The user needs to be on a user or guest account
-
-### Add to cart
-
-To add a new product to the cart send a POST to **/addtocart**
-
-The user needs to be on a user or guest account
-
-The request should look like this
+### UPDATEMENUITEM
+POST request on http://localhost:8000/updatemenuitem
 
 ```
 {
- "add" : {
-	"id": 1,
-	 "quantity": 15
- }
+	"id": 15,
+	"title": "Coffee Carta",
+	"desc": "Cartae dere",
+	"price": 52
 }
 ```
 
-All fields are required
-
-### Remove from cart
-
-To add a new product to the cart send a POST to **/addtocart**
-
-The user needs to be on a user or guest account
-
-The request should look like this
+### REMOVEMENUITEM
+POST request on http://localhost:8000/removemenuitem
 
 ```
 {
-    "remove": {
-        "id": 1
-    }
+	"id": 15
 }
 ```
+This example would remove the previous created or updated menu item by targetting its id.
 
-All fields are required
+### CREATEDISCOUNT
+POST request on http://localhost:8000/creatediscount
 
-### View cart
-
-To view the cart send a GET to **/viewcart**
-
-The user needs to be on a user or guest account
-
-### Place order
-
-When the user is happy with the items in cart
-
-Send a GET request to **/create**
-
-This will place an order with a searchable id into the database.
-
-Delivery data is not yet available
-
-### Show previous orders
-
-Send a GET request to **/orderhistory**
-
-The user needs to be logged in for this feature
-
-# **Thanks for using Airbean!**
+```
+{
+	"comboIds": [1, 4],
+  	"discountPercentage": 20
+}
+```
+This example would add a discount percentage on orders using the IDs of 1 & 4 from the menu.
