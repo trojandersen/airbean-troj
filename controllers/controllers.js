@@ -26,10 +26,9 @@ exports.createOrder = async (req, res) => {
       const orders = database.collection("Orders");
       const discounts = database.collection("Discounts");
 
-
       const userId = req.session.userID;
       const itemsInCart = req.session.cart;
-      const itemIds = itemsInCart.map(item => item.id);
+      const itemIds = itemsInCart.map((item) => item.id);
       const discount = await discounts.findOne({ comboIds: { $all: itemIds } });
 
       let billed = 0;
@@ -46,7 +45,7 @@ exports.createOrder = async (req, res) => {
 
       // Apply discount if available
       if (discount) {
-        billed = billed - (billed * (discount.discountPercentage / 100));
+        billed = billed - billed * (discount.discountPercentage / 100);
       }
 
       const randomString = generateRandomString(8);
@@ -351,10 +350,36 @@ exports.removeMenuItem = async (req, res) => {
 
 exports.createDiscount = async (req, res) => {
   try {
+    console.log("Request body:", req.body);
     const discount = req.body;
 
-    if (!discount.comboIds || discount.comboIds.length < 2 || !discount.discountPercentage) {
-      return res.status(400).json("Invalid discount: At least two comboIds and a discount percentage are required.");
+    // Check if comboIds is present and is an array
+    if (!discount.comboIds || !Array.isArray(discount.comboIds)) {
+      return res.status(400).json("Invalid comboIds: Must be an array.");
+    }
+
+    // Check if comboIds has at least two elements
+    if (discount.comboIds.length < 2) {
+      return res
+        .status(400)
+        .json("Invalid discount: At least two comboIds are required.");
+    }
+
+    // Check if discountPercentage is present and is a number
+    if (
+      !discount.discountPercentage ||
+      typeof discount.discountPercentage !== "number"
+    ) {
+      return res
+        .status(400)
+        .json("Invalid discountPercentage: Must be a number.");
+    }
+
+    // Ensure comboIds is an array of numbers
+    if (!discount.comboIds.every(Number.isFinite)) {
+      return res
+        .status(400)
+        .json("Invalid comboIds: Must be an array of numbers.");
     }
     // TODO: fix undefined type in comboIds array
     const database = client.db("Airbean");
@@ -362,16 +387,25 @@ exports.createDiscount = async (req, res) => {
     const discountDocument = {
       comboIds: discount.comboIds,
       discountPercentage: discount.discountPercentage,
-      created_at: new Date().toDateString()
+      created_at: new Date().toDateString(),
     };
 
-    // Insert the discount into the Discounts collection
     const result = await discounts.insertOne(discountDocument);
 
-    res.status(201).json(result.ops[0]);
+    console.log("Insert result:", result);
+
+    // Create the response object
+    const response = {
+      _id: result.insertedId,
+      ...discountDocument,
+    };
+
+    return res.status(201).json(response);
   } catch (error) {
     console.error(error);
-    return res.status(500).json("An error occured whilst trying to create this discount");
+    return res
+      .status(500)
+      .json("An error occured whilst trying to create this discount");
   }
 };
 
