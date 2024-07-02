@@ -3,7 +3,7 @@
 Group 7
 Rebecca Jansson, Johanna Tepsa, Simon Gustavsson, Troj Andersen, Tor Högberg.
 
-## Previously used options are found in the group project. Here I will instead focus on using the admin functions
+### Previously used options are found in the group project. Here I will instead focus on using the admin functions
 
 Setup the project with node and be sure to use npm install to ensure you have all the dependencies. Run the code by using
 "nodemon server.js". Then preferably use Insomnia to interact with the REST API.
